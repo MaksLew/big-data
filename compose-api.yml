@@ -1,0 +1,19 @@
+# Two services on one user-defined network. Compose creates that network and
+# registers each service name in its internal DNS, so "api" resolves from the
+# client container without any address being written down anywhere.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    volumes:
+      - ./rest-api/src:/src:z
+
+  client:
+    image: python:3.11-slim
+    volumes:
+      - ./rest-api/src:/src:z
+    working_dir: /src
+    command: ["python", "client.py"]
+    depends_on:
+      - api
