@@ -1,0 +1,20 @@
+name: network
+
+services:
+  serwer:
+    image: python:3.11-slim
+    command: python -m http.server 8000
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8000')" ]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+
+  klient:
+    image: python:3.11-slim
+    command: python -c 'import urllib.request as u; print(u.urlopen("http://serwer:8000").status)'
+    depends_on:
+      serwer:
+        condition: service_healthy
