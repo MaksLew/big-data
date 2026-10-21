@@ -1,4 +1,6 @@
 dane/
+week-02/data/
+week-02/out/
 minio-data/
 */**/.venv
 */**/__pycache__/
