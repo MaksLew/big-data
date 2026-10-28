@@ -25,29 +25,29 @@ services:
       <<: *hdfs-env
       ENSURE_NAMENODE_DIR: /data/name
     volumes:
-      - nn:/data
+      - nn:/data:z
       # the yearly data set and your scripts, read-only, for `hdfs dfs -put` run inside the cluster
-      - ./data:/mnt/host:ro
-      - ./scripts:/scripts:ro
+      - ./data:/mnt/host:ro,z
+      - ./scripts:/scripts:ro,z
 
   datanode-1:
     image: bd-hadoop:3.4.3
     hostname: datanode-1        # readable names in the web interface instead of container ids
     command: ["hdfs", "datanode"]
     environment: *hdfs-env
-    volumes: ["dn1:/data"]
+    volumes: ["dn1:/data:z"]
   datanode-2:
     image: bd-hadoop:3.4.3
     hostname: datanode-2
     command: ["hdfs", "datanode"]
     environment: *hdfs-env
-    volumes: ["dn2:/data"]
+    volumes: ["dn2:/data:z"]
   datanode-3:
     image: bd-hadoop:3.4.3
     hostname: datanode-3
     command: ["hdfs", "datanode"]
     environment: *hdfs-env
-    volumes: ["dn3:/data"]
+    volumes: ["dn3:/data:z"]
 
   # A program OUTSIDE the cluster that uses HDFS only as storage: it talks to the NameNode over
   # HTTP (WebHDFS), see scripts/hdfs_client.py. Image from W2 (Dockerfile: Python, pandas, pyarrow).
@@ -58,8 +58,8 @@ services:
     image: oom-lab:1
     profiles: ["client"]
     volumes:
-      - ./data:/data:ro
-      - ./scripts:/scripts:ro
+      - ./data:/data:ro,z
+      - ./scripts:/scripts:ro,z
 
 # Named volumes: they inherit the ownership of /data from the image (uid 1000), see Dockerfile.hadoop.
 # Wipe them with:  docker compose -f compose-hdfs.yml down -v
