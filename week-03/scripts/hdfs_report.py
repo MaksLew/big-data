@@ -21,7 +21,7 @@ def fsck(path: str) -> str:
     """Return the raw output of `hdfs fsck <path>` run inside the cluster."""
     # TODO 1: run `hdfs fsck <path>` through COMPOSE and return its stdout as text.
     #         Hint: subprocess.run(COMPOSE + [...], capture_output=True, text=True)
-    raise NotImplementedError
+    return subprocess.run(COMPOSE + ["hdfs", "fsck", path], capture_output=True, text=True).stdout # What about stderr?
 
 
 def parse(report: str) -> dict:
@@ -37,7 +37,14 @@ def parse(report: str) -> dict:
     """
     # TODO 2: extract the four values above. Regular expressions are the point
     #         of this exercise - do NOT build a pipeline of grep and cut.
-    raise NotImplementedError
+    return {
+           "size": int(re.search(r"^[ \t]*Total size:[ \t]*(\d+)[ \t]+B", report, re.MULTILINE).group(1)), # ty: ignore
+           "files": int(re.search(r"^[ \t]*Total files:[ \t]*(\d+)", report, re.MULTILINE).group(1)), # ty: ignore
+           "blocks": int(re.search(r"^[ \t]*Total blocks \(validated\):[ \t]*(\d+)", report, re.MULTILINE).group(1)), # ty: ignore
+           "replication": float(re.search(r"^[ \t]*Average block replication:[ \t]*(\d+(?:\.\d+)?)", report, re.MULTILINE).group(1)), # ty: ignore
+       }
+
+
 
 
 def main() -> None:
