@@ -3,6 +3,8 @@ week-02/data/
 week-02/out/
 week-03/data/
 week-03/out/
+week-04/data/
+week-04/out/
 minio-data/
 */**/.venv
 */**/__pycache__/
